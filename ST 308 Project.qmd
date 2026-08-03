@@ -1,0 +1,139 @@
+---
+title: "ST 308 Project"
+author: "Hung Nguyen, Landrey Lord"
+format: pdf
+---
+
+## Part 1
+```{r}
+library(tidyverse)
+```
+### Question 1
+Quarto is a type of document in R that allows us to make documents or reports 
+that can contain text, code, and show output all in one. Quarto document is 
+useful for people who work with data because it saves the codes written, 
+allowing people to go back and make any changes if needed. Quarto also helps us render to pdf file containing the graphical outputs of our codes, which is 
+useful for making reports (This question is answered by Landrey Lord)
+```{r}
+```
+### Question 2
+```{r}
+library(readr)
+house <- read_csv("aacline_house.csv")
+head(house)
+```
+```{r}
+```
+(This question is answered by Hung Nguyen)
+```{r}
+```
+### Question 3
+GarageCars is a quantitative column, which has numerical values and specifically
+integer values in our dataset. HouseStyle is a categorical column, which has character values in our dataset (This question is answered by Hung Nguyen)
+```{r}
+```
+### Question 4
+```{r}
+house %>%
+  filter(YearBuilt > median(YearBuilt),
+         SalePrice < mean(SalePrice),
+         HouseStyle == "2Story")
+```
+(This question is answered by Landrey Lord)
+```{r}
+```
+### Question 5
+```{r}
+house_subset <- 
+  house %>%
+    rename(sale_price = SalePrice,
+           garage_cars = GarageCars,
+           year_built = YearBuilt) %>%
+    mutate(garage_cars = factor(garage_cars)) %>%
+    select(sale_price, garage_cars, year_built)
+head(house_subset)
+
+```
+(This question is answered by Hung Nguyen)
+```{r}
+```
+### Question 6
+```{r}
+tapply(X = house$WoodDeckSF, INDEX = list(house$Foundation, house$RoofStyle), 
+       FUN = mean, na.rm = TRUE)
+tapply(X = house$WoodDeckSF, INDEX = list(house$Foundation, house$RoofStyle), 
+       FUN = sd, na.rm = TRUE)
+```
+(This question is answered by Hung Nguyen and Landrey Lord)
+```{r}
+```
+## Part 2
+```{r}
+```
+### Question 1
+In the dataset, each observation has 7 attributes. Most variables are 
+categorical, including START_DATE, END_DATE, CATEGORY, START, STOP, PURPOSE. 
+Only MILES is a quantitative variable. In addition, START_DATE and END_DATE 
+variables range from January to December 2016. Meanwhile, CATEGORY has two 
+values: ‘Business’ and ‘Personal’. START and STOP variables have values of 
+places in the United States. MILES are quantitative values with many different travelled distances. PURPOSE contains specific trip reasons though many 
+observations have missing values for this variable. The data came from a 
+driver's personal Uber ride history. Every ride recorded by Uber includes: start
+time, end time, pickup location, drop-off location, miles traveled, trip purpose
+(if added manually). The research question is which are the top 3 most common travelling purposes, whether it is personal or business category, 
+and which one has the longest average travelled distance. This research question relates to three variables: CATEGORY, PURPOSE, MILES. It answers which of the travelling purposes is popular and determines whether it is either a personal or business category. Audiences also can see which travelling purposes motivates 
+people to travel longer distances by Uber, which costs them a considerable 
+amount of money (This question is answered by Hung Nguyen and Landrey Lord)
+```{r}
+```
+### Question 2
+```{r}
+uber_data <- read_csv("UberDataset.csv")
+
+uber <- uber_data %>%
+  mutate(PURPOSE = na_if(PURPOSE, "")) %>% 
+# na_if() function is used to convert blank values in PURPOSE column into NA
+# values to serve for drop_na() function and then perform statistical summary
+  drop_na(PURPOSE)
+
+table(uber$PURPOSE, uber$CATEGORY)
+
+uber %>%
+  group_by(PURPOSE, CATEGORY) %>%
+  summarise(miles_avg = mean(MILES))
+
+library(ggplot2)
+ggplot(uber, aes(x = PURPOSE, y = MILES)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+# we used this theme() function to format the x-axis of our boxplot to make it
+# easier to see values on the x-axis
+  labs(
+    title = "Boxplot for distribution of miles travelled by travelling 
+    purposes",
+    x = "Travelling Purposes",
+    y = "Miles travelled"
+  )
+```
+The most common travelling purpose is Meeting, the second one is Meal/Entertain, 
+the third one is Errand/Supplies, all of these three purposes fall under the 
+Business category. However, the highest average miles travelled is Commute which falls under the Personal category. The data presents that the top three most 
+common ways of travelling are Meeting, Meal/Entertain, and Errand/Supplies, 
+which belong to the Business category, none of them have the highest average 
+miles travelled like we thought. The main reason behind this is that people do 
+not travel long distances for these purposes, so the average miles travelled is 
+not considerably high. With that people travel longer distances for Commute 
+purposes, so the miles travelled is significantly high compared to the low 
+frequency. With this specific case there is only 1 person travelling for 
+Commute and that person travelled over 180 miles, making this the highest number 
+we recorded of average miles travelled (This question is answered by Hung Nguyen 
+and Landrey Lord)
+
+
+
+
+
+
+
+
+
